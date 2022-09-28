@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #enable testing mode 
-option(testing_mode "enable testing" ON)
+option(testing_mode "enable testing" OFF)
 if(${testing_mode})
     message("test mode enabled")
     enable_testing()

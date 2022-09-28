@@ -1,13 +1,17 @@
 #include "dtm.hpp"
 #include <iostream>
-
+#include <sstream>
 int main(int argc, char *argv[]) {
   std::cout << "project is working \n";
   dtm::parsing::parser::validation_args(argc, argv);
   auto args = dtm::parsing::parser::get_args();
 
-  std::cout << "tcp port " << args->at(0) << " udp port " << args->at(1)
-            << " node number " << args->at(2) << std::endl;
+  std::stringstream ss;
+  ss << args->at(2);
+  std::uint32_t node_number;
+  ss >> node_number;
+  dtm::hash::hash_table h{node_number};
+  h.add_to_hash_table(4, 2);
 
   return 0;
 }

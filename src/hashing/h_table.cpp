@@ -1,38 +1,51 @@
 #include "h_table.hpp"
 #include "pre_info.hpp"
+#include <iostream>
 
 namespace dtm::hash {
-void hash_table::append_node(std::uint32_t data) { _node.push_back(data); }
+
+hash_table::hash_table(std::uint32_t node_number) : _node_number{node_number} {}
+
+void hash_table::append_node(node &node, std::uint32_t data) {
+
+  node.push_back(data);
+}
 
 std::uint32_t hash_table::add_to_hash_table(std::uint32_t key,
                                             std::uint32_t data) {
 
-  const std::uint32_t max_limit_key{(table_size - 1) * total_number_of_nodes +
-                                    node_number};
+  std::uint32_t max_limit_key{(table_size - 1) * total_number_of_nodes -
+                              _node_number};
 
   std::uint32_t relative_index{}, return_value{};
 
-  if (key % total_number_of_nodes == node_number && key <= max_limit_key,
-      key > -1) {
-    relative_index = (key - node_number) / total_number_of_nodes;
+  if ((total_number_of_nodes % key) == _node_number && (key <= max_limit_key) &&
+      (key >= 0)) {
 
-    // case 1 :  if hash table entry is empty
-    if (_hash_table_array.at(relative_index).first == 0) {
-      _hash_table_array.at(relative_index).first = data;
+    relative_index = (key - _node_number) / total_number_of_nodes;
+
+    // case 1 : if node is empty
+    if (_hash_table_array.at(relative_index).empty()) {
+      _hash_table_array.at(relative_index).push_back(data);
       return_value = 1;
     }
-
     // case 2 : if exactly one entry in particular entry of hashtable (Ist
     // Collision)
-
-    if (_hash_table_array.at(relative_index).first != 0 &&
-        _hash_table_array.at(relative_index).second.empty()) {
-      _hash_table_array.at(relative_index).second.push_back(data);
+    else if (_hash_table_array.at(relative_index).size() == 1) {
+      _hash_table_array.at(relative_index).push_back(data);
+      return_value = 1;
+    }
+    // case 3: Subsequent Collisions
+    else {
+      append_node(_hash_table_array.at(relative_index), data);
       return_value = 1;
     }
 
-    
+  } else {
+    std::cout << "error\n";
+    return_value = 0;
   }
-}
 
+  return 1;
+}
 } // namespace dtm::hash
