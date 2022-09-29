@@ -16,7 +16,7 @@ FetchContent_MakeAvailable(googletest)
 
 file(GLOB test_files *.cpp *.hpp)
 
-add_executable(${project_name}test ${test_files})
+add_executable(${project_name}test ${test_files} )
 target_include_directories(${project_name}test PRIVATE ../src)
 target_link_libraries(${project_name}test PRIVATE GTest::gtest_main d_t_m)
 
