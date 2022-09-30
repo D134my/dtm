@@ -1,5 +1,7 @@
 #include "h_table.hpp"
+#include "../misc/misc.hpp"
 #include "pre_info.hpp"
+#include <algorithm>
 #include <iostream>
 
 namespace dtm::hash {
@@ -38,11 +40,12 @@ namespace dtm::hash {
             }
 
         } else {
-            throw std::invalid_argument("error : bad argument passed \n");
+            auto error = dtm::misc::log("error : bad argument passed");
+            throw std::invalid_argument(error);
         }
     }
 
-    std::uint32_t hash_table::fetch_value_from_ht(std::uint32_t key) {
+    std::uint32_t hash_table::fetch_value_from_hash_table(std::uint32_t key) {
         //calculate index of key in hash table
         std::uint32_t relative_index = (key - _node_number) / total_number_of_nodes;
         std::uint32_t return_value;
@@ -74,12 +77,10 @@ namespace dtm::hash {
 
             for (std::uint32_t i = from; i < to; i++) {
                 key = i * total_number_of_nodes + _node_number;
-                fetch_value = fetch_value_from_ht(key);
+                fetch_value = fetch_value_from_hash_table(key);
 
                 if (fetch_value != 0)
-                    std::cout << "key : " << key << " value : " << fetch_value_from_ht(key) << '\n';
-                else
-                    std::cout << "invalid keys , hash table cannot be displayed\n";
+                    std::cout << "display -> key : " << key << " value : " << fetch_value_from_hash_table(key) << '\n';
             }
         }
     }
@@ -92,6 +93,101 @@ namespace dtm::hash {
             return 1;//1 means get method, 0 means put
         else
             return 0;
+    }
+
+    std::uint32_t hash_table::extract_key_from_get_request(const std::string &request) noexcept {
+
+        try {
+            auto str = request;
+            auto left_parentheses = std::ranges::find(str, '(');
+
+            if (left_parentheses == str.end()) {
+                auto error = dtm::misc::log(" '(' not found !");
+                throw std::invalid_argument(error);
+            }
+
+            str.erase(str.begin(), left_parentheses + 1);
+            auto right_parentheses = std::ranges::find(str, ')');
+
+            if (right_parentheses == str.end()) {
+                auto error = dtm::misc::log(" ')' not found !");
+                throw std::invalid_argument(error);
+            }
+
+            str.erase(str.begin() + 1, right_parentheses + 1);
+
+            return dtm::misc::str_to_u32_t(str);
+
+        } catch (std::exception &e) {
+            std::cerr << e.what();
+            std::exit(EXIT_FAILURE);
+        }
+    }
+
+    std::uint32_t hash_table::extract_key_from_put_request(std::string const &request) noexcept {
+        try {
+            auto str = request;
+            auto left_parentheses = std::ranges::find(str, '(');
+
+            if (left_parentheses == str.end()) {
+                auto error = dtm::misc::log(" '(' not found !");
+                throw std::invalid_argument(error);
+            }
+            str.erase(str.begin(), left_parentheses + 1);
+
+            auto comma = std::ranges::find(str, ',');
+
+            if (comma == str.end()) {
+                auto error = dtm::misc::log(" ',' not found !");
+                throw std::invalid_argument(error);
+            }
+
+            str.erase(str.begin() + 1, comma + 1);
+
+            auto right_parentheses = std::ranges::find(str, ')');
+
+            if (right_parentheses == str.end()) {
+                auto error = dtm::misc::log(" ')' not found !");
+                throw std::invalid_argument(error);
+            }
+
+            str.erase(str.begin() + 1, right_parentheses + 1);
+            return dtm::misc::str_to_u32_t(str);
+
+        } catch (std::exception &e) {
+            std::cerr << e.what();
+            std::exit(EXIT_FAILURE);
+        }
+    }
+
+    std::uint32_t hash_table::extract_value_from_put_request(const std::string &request) noexcept {
+        try {
+            auto str = request;
+
+            auto comma = std::ranges::find(str, ',');
+
+            if (comma == str.end()) {
+                auto error = dtm::misc::log(" ',' not found !");
+                throw std::invalid_argument(error);
+            }
+
+            str.erase(str.begin() , comma + 1);
+
+            auto right_parentheses = std::ranges::find(str, ')');
+
+            if (right_parentheses == str.end()) {
+                auto error = dtm::misc::log(" ')' not found !");
+                throw std::invalid_argument(error);
+            }
+
+            str.erase(str.begin() + 1 , right_parentheses + 1);
+
+            return dtm::misc::str_to_u32_t(str);
+
+        }catch (std::exception &e) {
+            std::cerr << e.what();
+            std::exit(EXIT_FAILURE);
+        }
     }
 
 }// namespace dtm::hash

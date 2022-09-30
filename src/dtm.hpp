@@ -5,5 +5,5 @@
 #include "msg/msg.hpp"
 #include "parser/arg_parser.hpp"
 #include "socket/socket.hpp"
-
+#include "misc/misc.hpp"
 #endif

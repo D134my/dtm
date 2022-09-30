@@ -19,10 +19,14 @@ public:
   explicit hash_table(std::uint32_t node_number = 3);
   void append_node(node &node, std::uint32_t data);
   void add_to_hash_table(std::uint32_t key, std::uint32_t data);
-  std::uint32_t fetch_value_from_ht(std::uint32_t key);
+  std::uint32_t fetch_value_from_hash_table(std::uint32_t key);
   void display_hash_table();
   bool check_current_node(std::uint32_t node_number, std::string const& request) noexcept;
   std::uint32_t get_or_put_(std::string const& request);
+  std::uint32_t extract_key_from_get_request(std::string const& request) noexcept;
+  std::uint32_t extract_key_from_put_request(std::string const& request) noexcept;
+  std::uint32_t extract_value_from_put_request(std::string const& request) noexcept;
+
 private:
   h_t_array _hash_table_array{};
   std::uint32_t _node_number;
