@@ -1,17 +1,19 @@
-#ifndef __dtm_socket__
-#define __dtm_socket__
+#ifndef __dtm_dtm_socket__
+#define __dtm_dtm_socket__
 
-namespace dtm::socket {
-class dtm_socket {
-public:
-  virtual void create_socket() = 0;
-  virtual void send_msg() = 0;
-  virtual void recv_msg() = 0;
-  virtual void print_msg() = 0;
+#include <string>
 
-  virtual ~dtm_socket() = default;
-};
+namespace dtm::sock {
+    class dtm_socket {
+    public:
+        virtual void create_socket() = 0;
+        virtual void send_msg(std::string const &) = 0;
+        [[nodiscard]] virtual std::pair<std::string, int> recv_msg() { return {"don't use me ", 0}; };
 
-} // namespace dtm::socket
+
+        virtual ~dtm_socket() = default;
+    };
+
+}// namespace dtm::sock
 
 #endif
