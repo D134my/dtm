@@ -10,5 +10,6 @@
 #include<netinet/in.h>
 #include<sys/select.h>
 #include<string.h>
+#include <unistd.h>
 
 #endif

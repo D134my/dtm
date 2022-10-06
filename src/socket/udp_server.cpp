@@ -1,7 +1,7 @@
 #include "udp_server.hpp"
 #include "../misc/misc.hpp"
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 namespace dtm::sock {
     udp_server::udp_server(struct sockaddr_in &server_addr) : _server_info(server_addr) {}
@@ -37,25 +37,37 @@ namespace dtm::sock {
 
     void udp_server::udp_bind() {
         int opt = 1;
-        if (setsockopt(_udp_socket, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, sizeof(opt)) < 0) {
+        if ((setsockopt(_udp_socket, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, sizeof(opt))) < 0) {
             auto error = dtm::misc::log("setsockopt so_reuseaddr failed");
             throw std::runtime_error(error);
         }
 
 
-        if (setsockopt(_udp_socket, SOL_SOCKET, SO_REUSEPORT, (char *)&opt, sizeof(opt))<0)
-        {
+        if ((setsockopt(_udp_socket, SOL_SOCKET, SO_REUSEPORT, (char *) &opt, sizeof(opt))) < 0) {
             auto error = dtm::misc::log("setsockopt so_reuseport failed");
             throw std::runtime_error(error);
-
         }
 
-        if ((bind(_udp_socket,(struct sockaddr *)&_server_info, sizeof(struct sockaddr))) == -1)
-        {
+        if ((bind(_udp_socket, (struct sockaddr *) &_server_info, sizeof(struct sockaddr))) == -1) {
             auto error = dtm::misc::log("bind failed");
             throw std::runtime_error(error);
         }
+    }
 
+    int udp_server::get_socket() noexcept {
+        return _udp_socket;
+    }
+
+    udp_server::~udp_server() {
+        close(_udp_socket);
+    }
+    std::tuple<std::string, int, sockaddr_in> udp_server::recvfrom_msg() {
+        struct sockaddr_in client_addr;
+        char buffer[1204];
+        memset(buffer, '\0', sizeof(buffer));
+        socklen_t addr_len = sizeof(sockaddr);
+        auto recv_size = recvfrom(_udp_socket, buffer, 1024, 0, (struct sockaddr *) &client_addr, &addr_len);
+        return {std::string(buffer), recv_size, client_addr};
     }
 
 }// namespace dtm::sock

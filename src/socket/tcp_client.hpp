@@ -1,25 +1,26 @@
-#ifndef __dtm_udp_client__
-#define __dtm_udp_client__
+#ifndef __dtm_tcp_client__
+#define __dtm_tcp_client__
 
-#include "dtm_socket.hpp"
 #include "net_headers.hpp"
-
+#include "dtm_socket.hpp"
 
 namespace dtm::sock {
-    class udp_client : public dtm_socket {
+    class tcp_client : public dtm_socket {
     public:
-        udp_client(struct sockaddr_in &client_addr);
+        tcp_client(struct sockaddr_in &server_addr);
         void create_socket() override;
         void send_msg(std::string const &message) override;
         [[nodiscard]] std::pair<std::string, int> recv_msg()  override;
         [[nodiscard]] int get_socket ()  noexcept override;
-        void del_sock() noexcept;
-        virtual ~udp_client();
+        virtual ~tcp_client();
 
     private:
-        struct sockaddr_in _client_info;
-        int _udp_socket;
+        void tcp_connect();
+    private:
+        int _tcp_socket;
+        struct sockaddr_in _server_info;
     };
 }// namespace dtm::sock
+
 
 #endif

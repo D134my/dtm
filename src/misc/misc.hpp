@@ -2,6 +2,7 @@
 #define __dtm__misc__
 
 #include "logger.hpp"
+#include "prompt.hpp"
 #include "string_to_uint32_t.hpp"
 
 #endif

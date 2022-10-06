@@ -6,5 +6,7 @@
 #include "net_headers.hpp"
 #include "udp_client.hpp"
 #include "udp_server.hpp"
+#include "tcp_server.hpp"
+#include "tcp_client.hpp"
 
 #endif
