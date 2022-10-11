@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
         dtm::net::network n;
 
         std::uint16_t tcp_port = dtm::misc::str_to_u32_t(args->at(0));
-        std::uint32_t udp_port = dtm::misc::str_to_u32_t(args->at(1));
+        std::uint16_t udp_port = dtm::misc::str_to_u32_t(args->at(1));
         n.set_node(dtm::_node_number, tcp_port, udp_port);              //2000 //2004
         n.set_node((dtm::_node_number + 1), tcp_port + 1, udp_port + 1);//2001  //2005
         n.set_node(dtm::_node_number + 2, tcp_port + 2, udp_port + 2);  //2003 //2006
